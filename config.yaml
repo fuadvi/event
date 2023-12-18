@@ -1,0 +1,5 @@
+web:
+  prefork: false
+  port: 3000
+jwt:
+  secret: fuad

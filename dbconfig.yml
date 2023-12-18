@@ -1,0 +1,6 @@
+development:
+  dialect: mysql
+  datasource: root@/rental_mobile_fiber?parseTime=true
+  dir: db/migrations
+  table: migrations
+
