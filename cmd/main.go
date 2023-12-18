@@ -30,7 +30,7 @@ func main() {
 		DB:       db,
 		App:      app,
 		Validate: validate,
-		Config:   configViper,
+		Viper:    configViper,
 	})
 
 	webPort := configViper.GetInt("web.port")

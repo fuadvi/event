@@ -16,7 +16,7 @@ type BootstrapConfig struct {
 	DB       *sql.DB
 	App      *fiber.App
 	Validate *validator.Validate
-	Config   *viper.Viper
+	Viper    *viper.Viper
 }
 
 func Bootstrap(config *BootstrapConfig) {
@@ -24,12 +24,12 @@ func Bootstrap(config *BootstrapConfig) {
 	userRepository := repository.NewUserRepository()
 
 	// setup use cases
-	userUseCase := usecase.NewUserUseCase(config.DB, config.Validate, userRepository)
+	userUseCase := usecase.NewUserUseCase(config.DB, config.Validate, userRepository, config.Viper)
 
 	// setup controller
 	userController := http.NewUserController(userUseCase)
 
-	authMiddleware := middleware.JWTProtected()
+	authMiddleware := middleware.JWTProtected(config.Viper)
 
 	routeConfig := route.RouteConfig{
 		App:            config.App,

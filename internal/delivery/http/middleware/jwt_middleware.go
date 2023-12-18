@@ -6,11 +6,18 @@ import (
 	"github.com/spf13/viper"
 )
 
-func JWTProtected() func(*fiber.Ctx) error {
-	configViper := viper.New()
+func JWTProtected(configViper *viper.Viper) func(*fiber.Ctx) error {
+
+	jwtSecret := configViper.GetString("jwt.secret")
+
+	// Convert JWT secret key to []byte
+	jwtSecretBytes := []byte(jwtSecret)
+
 	// Create config for JWT authentication middleware.
 	config := jwtware.Config{
-		SigningKey:   jwtware.SigningKey{Key: configViper.GetString("jwt.secret")},
+		SigningKey: jwtware.SigningKey{
+			Key: jwtSecretBytes,
+		},
 		ContextKey:   "jwt", // used in private routes
 		ErrorHandler: jwtError,
 	}

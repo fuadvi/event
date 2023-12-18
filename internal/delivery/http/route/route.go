@@ -22,5 +22,13 @@ func (c *RouteConfig) Setup() {
 }
 
 func (c *RouteConfig) SetupUserRoute() {
-	c.App.Post("/api/users", c.UserController.Register)
+	c.App.Post("/api/register", c.UserController.Register)
+	c.App.Post("/api/login", c.UserController.Login)
+
+	c.App.Use(c.AuthMiddleware)
+	c.App.Post("/api/tes", func(ctx *fiber.Ctx) error {
+		return ctx.JSON(fiber.Map{
+			"tes": "oke",
+		})
+	})
 }
