@@ -31,7 +31,7 @@ func (u *UserUseCase) Create(ctx context.Context, request *model.RegisterUser) (
 
 	err := u.Validate.Struct(request)
 	if err != nil {
-		return nil, fiber.ErrInternalServerError
+		return nil, fiber.ErrBadRequest
 	}
 
 	password, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
@@ -73,7 +73,7 @@ func (u *UserUseCase) Login(ctx context.Context, request *model.LoginRequest) (*
 
 	claims := jwt.MapClaims{
 		"name": user.Name,
-		"exp":  time.Now().Add(time.Second * 10).Unix(),
+		"exp":  time.Now().Add(time.Hour * 24).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

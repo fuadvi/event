@@ -22,19 +22,23 @@ type BootstrapConfig struct {
 func Bootstrap(config *BootstrapConfig) {
 	// setup repositories
 	userRepository := repository.NewUserRepository()
+	eventRepostory := repository.NewEventRepository()
 
 	// setup use cases
 	userUseCase := usecase.NewUserUseCase(config.DB, config.Validate, userRepository, config.Viper)
+	eventUseCase := usecase.NewEventUseCase(config.DB, config.Validate, eventRepostory, config.Viper)
 
 	// setup controller
 	userController := http.NewUserController(userUseCase)
+	eventController := http.NewEventController(eventUseCase)
 
 	authMiddleware := middleware.JWTProtected(config.Viper)
 
 	routeConfig := route.RouteConfig{
-		App:            config.App,
-		UserController: userController,
-		AuthMiddleware: authMiddleware,
+		App:             config.App,
+		UserController:  userController,
+		EventController: eventController,
+		AuthMiddleware:  authMiddleware,
 	}
 
 	routeConfig.Setup()

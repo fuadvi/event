@@ -12,13 +12,15 @@ import (
 //}
 
 type RouteConfig struct {
-	App            *fiber.App
-	UserController *http.UserController
-	AuthMiddleware fiber.Handler
+	App             *fiber.App
+	UserController  *http.UserController
+	EventController *http.EventController
+	AuthMiddleware  fiber.Handler
 }
 
 func (c *RouteConfig) Setup() {
 	c.SetupUserRoute()
+	c.SetupEventRoute()
 }
 
 func (c *RouteConfig) SetupUserRoute() {
@@ -31,4 +33,13 @@ func (c *RouteConfig) SetupUserRoute() {
 			"tes": "oke",
 		})
 	})
+}
+
+func (c *RouteConfig) SetupEventRoute() {
+	c.App.Use(c.AuthMiddleware)
+
+	event := c.App.Group("/api/event")
+	event.Post("/", c.EventController.Create)
+	event.Put("/:id", c.EventController.Update)
+	event.Delete("/:id", c.EventController.Delete)
 }
