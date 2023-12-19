@@ -1,2 +1,11 @@
 migrations:
-	migrate create -ext sql -dir db/migrations ${path}
+	sql-migrate new ${name}
+
+migrate-up:
+	sql-migrate up
+
+migrate-down:
+	sql-migrate down
+
+migrate-redo:
+	sql-migrate redo
