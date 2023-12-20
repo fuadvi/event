@@ -73,3 +73,19 @@ func (e *EventController) Delete(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(model.WebResponse[string]{Data: "success delete event"})
 }
+
+func (e *EventController) Get(ctx *fiber.Ctx) error {
+	params := ctx.Params("id")
+	eventId, err := strconv.Atoi(params)
+
+	if err != nil {
+		return ctx.JSON(model.WebResponse[interface{}]{Errors: err.Error()})
+	}
+
+	response, err := e.EventCase.GetEvent(ctx.UserContext(), eventId)
+	if err != nil {
+		return ctx.JSON(model.WebResponse[interface{}]{Errors: err.Error()})
+	}
+
+	return ctx.JSON(model.WebResponse[*model.EventResponse]{Data: response})
+}

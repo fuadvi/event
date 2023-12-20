@@ -90,3 +90,14 @@ func (e EventUseCase) Destroy(ctx context.Context, eventId int) error {
 
 	return nil
 }
+
+func (e *EventUseCase) GetEvent(ctx context.Context, eventId int) (*model.EventResponse, error) {
+	event, err := e.EventRepo.Get(ctx, eventId, e.DB)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return convert.EventToResponse(&event), nil
+
+}
