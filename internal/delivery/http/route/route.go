@@ -39,6 +39,7 @@ func (c *RouteConfig) SetupEventRoute() {
 	c.App.Use(c.AuthMiddleware)
 
 	event := c.App.Group("/api/event")
+	event.Get("/", c.EventController.List)
 	event.Get("/:id", c.EventController.Get)
 	event.Post("/", c.EventController.Create)
 	event.Put("/:id", c.EventController.Update)

@@ -89,3 +89,13 @@ func (e *EventController) Get(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(model.WebResponse[*model.EventResponse]{Data: response})
 }
+
+func (e *EventController) List(ctx *fiber.Ctx) error {
+
+	response, err := e.EventCase.ListEvent(ctx.UserContext())
+	if err != nil {
+		return ctx.JSON(model.WebResponse[interface{}]{Errors: err.Error()})
+	}
+
+	return ctx.JSON(model.WebResponse[[]*model.EventResponse]{Data: response})
+}

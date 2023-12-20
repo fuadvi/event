@@ -101,3 +101,18 @@ func (e *EventUseCase) GetEvent(ctx context.Context, eventId int) (*model.EventR
 	return convert.EventToResponse(&event), nil
 
 }
+
+func (e *EventUseCase) ListEvent(ctx context.Context) ([]*model.EventResponse, error) {
+	events, err := e.EventRepo.All(ctx, e.DB)
+	if err != nil {
+		return nil, fiber.ErrInternalServerError
+	}
+
+	var responseEvent []*model.EventResponse
+
+	for _, event := range events {
+		responseEvent = append(responseEvent, convert.EventToResponse(&event))
+	}
+
+	return responseEvent, nil
+}

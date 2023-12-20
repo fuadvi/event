@@ -105,3 +105,44 @@ func (e *EventRepository) Get(ctx context.Context, eventId int, db *sql.DB) (ent
 
 	return event, nil
 }
+
+func (e *EventRepository) All(ctx context.Context, db *sql.DB) ([]entity.Event, error) {
+	SqlCommand := "select id, title, thumbnail, start_date, end_date, description, max_join, price, is_publish, location from events"
+	row, err := db.QueryContext(ctx, SqlCommand)
+
+	var events []entity.Event
+
+	if err != nil {
+		return events, err
+	}
+
+	for row.Next() {
+		var event entity.Event
+		var startDateRaw []uint8
+		var endDateRaw []uint8
+		err := row.Scan(&event.ID, &event.Title, &event.Thumbnail, &startDateRaw, &endDateRaw, &event.Description, &event.MaxJoin, &event.Price, &event.IsPublish, &event.Location)
+		if err != nil {
+			return events, fiber.ErrInternalServerError
+		}
+
+		// Convert []uint8 to time.Time
+		startDate, err := time.Parse("2006-01-02 15:04:05", string(startDateRaw))
+		if err != nil {
+			return events, err
+		}
+
+		event.StartDate = startDate
+
+		// Convert []uint8 to time.Time
+		endDate, err := time.Parse("2006-01-02 15:04:05", string(endDateRaw))
+		if err != nil {
+			return events, err
+		}
+
+		event.EndDate = endDate
+
+		events = append(events, event)
+	}
+
+	return events, nil
+}
